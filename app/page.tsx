@@ -13,7 +13,7 @@ import { TransactionQueryParams, TransactionResponse } from "@/types/transaction
 import { fetchTransactions } from "@/utils/fetchTransactions";
 
 const defaultPageSize = 50;
-const refetchInterval = 60 * 1000; // 1 min
+const refetchInterval = 5 * 60 * 1000; // 5 min
 
 const defaultTransactionData = {
   transactions: [],
