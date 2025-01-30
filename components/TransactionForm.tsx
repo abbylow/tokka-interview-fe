@@ -5,10 +5,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 interface TransactionFormProps {
-  onSearch: (txHash: string, startTimestamp: number, endTimestamp: number) => void
+  onSearch: (txHash: string, startTimestamp: number, endTimestamp: number) => void,
+  isLoading: boolean
 }
 
-export default function TransactionForm({ onSearch }: TransactionFormProps) {
+export default function TransactionForm({ onSearch, isLoading }: TransactionFormProps) {
   const [txHash, setTxHash] = useState("")
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
@@ -52,7 +53,7 @@ export default function TransactionForm({ onSearch }: TransactionFormProps) {
               <Input type="date" id="endDate" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
             </div>
           </div>
-          <Button type="submit">Search</Button>
+          <Button type="submit" disabled={isLoading}>Search</Button>
         </form>
       </CardContent>
     </Card>

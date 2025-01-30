@@ -1,15 +1,26 @@
 "use client";
 
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { AlertCircle } from "lucide-react";
+import { useState } from "react";
 
 import TransactionForm from "@/components/TransactionForm";
 import TransactionSummary from "@/components/TransactionSummary";
+import TransactionList from "@/components/TransactionList";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Skeleton } from "@/components/ui/skeleton";
 import { TransactionQueryParams, TransactionResponse } from "@/types/transaction";
 import { fetchTransactions } from "@/utils/fetchTransactions";
 
 const defaultPageSize = 50;
 const refetchInterval = 60 * 1000; // 1 min
+
+const defaultTransactionData = {
+  transactions: [],
+  totalCount: 0,
+  currentPage: 1,
+  pageSize: defaultPageSize
+}
 
 export default function Home() {
   const [searchParams, setSearchParams] = useState<TransactionQueryParams>({
@@ -20,7 +31,7 @@ export default function Home() {
     limit: defaultPageSize,
   })
 
-  const { data: transactionData, isLoading, error } = useQuery<TransactionResponse, Error>({
+  const { data, isLoading, error } = useQuery<TransactionResponse, Error>({
     queryKey: ['transactions'],
     queryFn: () => fetchTransactions(searchParams),
     refetchInterval: refetchInterval
@@ -35,13 +46,41 @@ export default function Home() {
       page: 1, // reset to first page on new search
     }))
   }
+
+  const handlePageChange = async (page: number, limit: number) => {
+    setSearchParams((prev) => ({
+      ...prev,
+      page,
+      limit
+    }))
+  }
+  
   return (
     <main className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Uniswap WETH-USDC Transaction Explorer</h1>
 
-      <TransactionForm onSearch={handleSearch} />
+      <TransactionForm onSearch={handleSearch} isLoading={isLoading} />
 
-      <TransactionSummary transactions={[]} />
+      <TransactionSummary transactions={data?.transactions || []} />
+
+      {error && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error.message}</AlertDescription>
+        </Alert>
+      )}
+      
+      {
+        isLoading ?
+          <Skeleton className="w-full h-96 animate-pulse" />
+          :
+          <TransactionList
+            transactionData={data || defaultTransactionData}
+            onPageChange={handlePageChange}
+          />
+      }
+
     </main>
   )
 }
