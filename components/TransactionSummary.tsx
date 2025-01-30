@@ -1,15 +1,27 @@
-import type { Transaction } from "@/types/transaction"
+import { useQuery } from "@tanstack/react-query";
+
+import { getTokenPrice } from "@/actions/getTokenPrice";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton";
+import type { Transaction } from "@/types/transaction"
 
 interface TransactionSummaryProps {
   transactions: Transaction[]
 }
 
+const symbol = "ETHUSDT";
+
+const refetchInterval = 60 * 1000; // 1 min
+
 export default function TransactionSummary({ transactions }: TransactionSummaryProps) {
   const totalFeeUSDT = transactions.reduce((sum, tx) => sum + Number(tx.usdt_fee), 0)
   const totalFeeETH = transactions.reduce((sum, tx) => sum + Number(tx.eth_fee), 0)
 
-  const curentETHUSDTPrice = 3333; // TODO: get this from external API
+  const { data, isLoading } = useQuery({
+    queryKey: ["currentPrice"],
+    queryFn: () => getTokenPrice(symbol),
+    refetchInterval,
+  });
 
   return (
     <Card className="mb-8">
@@ -28,7 +40,7 @@ export default function TransactionSummary({ transactions }: TransactionSummaryP
           </div>
           <div>
             <p className="font-semibold">Current ETH/USDT Price</p>
-            <p className="text-2xl">${curentETHUSDTPrice.toFixed(2)}</p>
+            {(isLoading || !data.price) ? <Skeleton className="h-8 w-36" /> : <p className="text-2xl">${Number(data?.price).toFixed(2)}</p>}
           </div>
         </div>
       </CardContent>
