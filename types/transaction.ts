@@ -15,6 +15,13 @@ export interface TransactionResponse {
   transactions: Transaction[]
   totalCount: number
   currentPage: number
-  pageSize: number
+  limit: number
 }
 
+export interface TransactionQueryParams {
+  txHash: string;
+  startTimestamp: number;
+  endTimestamp: number;
+  page: number;
+  limit: number;
+}

@@ -1,29 +1,39 @@
 "use client";
 
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import TransactionForm from "@/components/TransactionForm";
 import TransactionSummary from "@/components/TransactionSummary";
-import { TransactionResponse } from "@/types/transaction";
+import { TransactionQueryParams, TransactionResponse } from "@/types/transaction";
+import { fetchTransactions } from "@/utils/fetchTransactions";
+
+const defaultPageSize = 50;
+const refetchInterval = 60 * 1000; // 1 min
 
 export default function Home() {
-  const [transactionData, setTransactionData] = useState<TransactionResponse | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [searchParams, setSearchParams] = useState<TransactionQueryParams>({
+    txHash: "",
+    startTimestamp: 0,
+    endTimestamp: Math.floor(Date.now() / 1000),
+    page: 1,
+    limit: defaultPageSize,
+  })
 
-  const handleSearch = async (txId: string, startTimestamp: number, endTimestamp: number, page = 1, pageSize = 50) => {
-    setLoading(true)
-    setError(null)
+  const { data: transactionData, isLoading, error } = useQuery<TransactionResponse, Error>({
+    queryKey: ['transactions'],
+    queryFn: () => fetchTransactions(searchParams),
+    refetchInterval: refetchInterval
+  });
 
-    console.log({ txId, startTimestamp, endTimestamp, page, pageSize })
-    try {
-      // TODO: get tx data by filter
-      // setTransactionData(data)
-    } catch (err) {
-      setError("An error occurred while fetching transactions")
-    } finally {
-      setLoading(false)
-    }
+  const handleSearch = async (txHash: string, startTimestamp: number, endTimestamp: number) => {
+    setSearchParams((prev) => ({
+      ...prev,
+      txHash,
+      startTimestamp,
+      endTimestamp,
+      page: 1, // reset to first page on new search
+    }))
   }
   return (
     <main className="container mx-auto px-4 py-8">
