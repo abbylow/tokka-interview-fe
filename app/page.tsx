@@ -32,7 +32,7 @@ export default function Home() {
   })
 
   const { data, isLoading, error } = useQuery<TransactionResponse, Error>({
-    queryKey: ['transactions'],
+    queryKey: ['transactions', searchParams],
     queryFn: () => fetchTransactions(searchParams),
     refetchInterval: refetchInterval
   });
