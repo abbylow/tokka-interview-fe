@@ -14,8 +14,11 @@ const symbol = "ETHUSDT";
 const refetchInterval = 60 * 1000; // 1 min
 
 export default function TransactionSummary({ transactions }: TransactionSummaryProps) {
-  const totalFeeUSDT = transactions.reduce((sum, tx) => sum + Number(tx.usdt_fee), 0)
-  const totalFeeETH = transactions.reduce((sum, tx) => sum + Number(tx.eth_fee), 0)
+  const { data: summaryData } = useQuery({
+    queryKey: ["transactionSummary"],
+    queryFn: fetchTransactionSummary,
+    refetchInterval,
+  });
 
   const { data, isLoading } = useQuery({
     queryKey: ["currentPrice"],
@@ -32,11 +35,17 @@ export default function TransactionSummary({ transactions }: TransactionSummaryP
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <p className="font-semibold">Total Transaction Fee (USDT)</p>
-            <p className="text-2xl">${totalFeeUSDT.toFixed(2)}</p>
+            {summaryData?.totalUsdtFee ?
+              <p className="text-2xl">${summaryData?.totalUsdtFee.toFixed(2)}</p>
+              : <Skeleton className="h-8 w-36" />
+            }
           </div>
           <div>
             <p className="font-semibold">Total Transaction Fee (ETH)</p>
-            <p className="text-2xl">{totalFeeETH.toFixed(6)} ETH</p>
+            {summaryData?.totalEthFee ?
+              <p className="text-2xl">{summaryData?.totalEthFee.toFixed(6)} ETH</p>
+              : <Skeleton className="h-8 w-36" />
+            }
           </div>
           <div>
             <p className="font-semibold">Current ETH/USDT Price</p>
