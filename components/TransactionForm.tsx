@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label"
 
 interface TransactionFormProps {
   onSearch: (txHash: string, startTimestamp: number, endTimestamp: number) => void,
-  isLoading: boolean
+  isLoading: boolean,
 }
 
 export default function TransactionForm({ onSearch, isLoading }: TransactionFormProps) {
@@ -18,19 +18,25 @@ export default function TransactionForm({ onSearch, isLoading }: TransactionForm
     e.preventDefault()
 
     // Convert start date to start of day timestamp
-    const startTimestamp = startDate ? new Date(startDate).setHours(0, 0, 0, 0) / 1000 : 0
+    const startTimestamp = startDate ? Math.floor(new Date(startDate).setHours(0, 0, 0, 0) / 1000) : 0;
 
     // Convert end date to end of day timestamp
-    const endTimestamp = endDate ? new Date(endDate).setHours(23, 59, 59, 999) / 1000 : Math.floor(Date.now() / 1000)
-
+    const endTimestamp = endDate ? Math.floor(new Date(endDate).setHours(23, 59, 59, 999) / 1000) : Math.floor(Date.now() / 1000);
+    
     // Validate that the start timestamp is earlier than the end timestamp
     if (startTimestamp > endTimestamp) {
       // You can replace this with a toast notification or other error handling method
       alert("Start date must be earlier than the end date")
       return
     }
-    
+
     onSearch(txHash, startTimestamp, endTimestamp)
+  }
+
+  const handleClear = () => {
+    setTxHash("")
+    setStartDate("")
+    setEndDate("")
   }
 
   return (
@@ -60,7 +66,10 @@ export default function TransactionForm({ onSearch, isLoading }: TransactionForm
               <Input type="date" id="endDate" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
             </div>
           </div>
-          <Button type="submit" disabled={isLoading}>Search</Button>
+          <div className="flex justify-between">
+            <Button type="submit" disabled={isLoading}>Search</Button>
+            <Button type="button" variant="outline" disabled={isLoading} onClick={handleClear}>Clear Form</Button>
+          </div>
         </form>
       </CardContent>
     </Card>
