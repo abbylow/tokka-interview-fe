@@ -5,15 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Transaction } from "@/types/transaction"
 
-interface TransactionSummaryProps {
-  transactions: Transaction[]
-}
-
 const symbol = "ETHUSDT";
 
 const refetchInterval = 60 * 1000; // 1 min
 
-export default function TransactionSummary({ transactions }: TransactionSummaryProps) {
+export default function TransactionSummary() {
   const { data: summaryData } = useQuery({
     queryKey: ["transactionSummary"],
     queryFn: fetchTransactionSummary,

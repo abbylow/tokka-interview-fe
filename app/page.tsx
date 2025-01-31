@@ -61,7 +61,7 @@ export default function Home() {
 
       <TransactionForm onSearch={handleSearch} isLoading={isLoading} />
 
-      <TransactionSummary transactions={data?.transactions || []} />
+      <TransactionSummary />
 
       {error && (
         <Alert variant="destructive" className="mb-4">
