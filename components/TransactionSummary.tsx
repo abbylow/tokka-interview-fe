@@ -32,14 +32,14 @@ export default function TransactionSummary() {
           <div>
             <p className="font-semibold">Total Transaction Fee (USDT)</p>
             {summaryData?.totalUsdtFee ?
-              <p className="text-2xl">${summaryData?.totalUsdtFee.toFixed(2)}</p>
+              <p className="text-2xl">${Number(summaryData.totalUsdtFee).toFixed(2)}</p>
               : <Skeleton className="h-8 w-36" />
             }
           </div>
           <div>
             <p className="font-semibold">Total Transaction Fee (ETH)</p>
             {summaryData?.totalEthFee ?
-              <p className="text-2xl">{summaryData?.totalEthFee.toFixed(6)} ETH</p>
+              <p className="text-2xl">{Number(summaryData.totalEthFee).toFixed(6)} ETH</p>
               : <Skeleton className="h-8 w-36" />
             }
           </div>

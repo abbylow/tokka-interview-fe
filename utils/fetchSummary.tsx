@@ -1,6 +1,6 @@
 interface TransactionSummaryResponse {
-  totalEthFee: number;
-  totalUsdtFee: number;
+  totalEthFee: string;
+  totalUsdtFee: string;
 }
 
 export async function fetchTransactionSummary(): Promise<TransactionSummaryResponse> {
