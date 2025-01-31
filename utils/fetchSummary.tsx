@@ -3,7 +3,7 @@ interface TransactionSummaryResponse {
   totalUsdtFee: number;
 }
 
-async function fetchTransactionSummary(): Promise<TransactionSummaryResponse> {
+export async function fetchTransactionSummary(): Promise<TransactionSummaryResponse> {
   const response = await fetch("/transactions-summary", {
     method: "POST",
   });

@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getTokenPrice } from "@/actions/getTokenPrice";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Transaction } from "@/types/transaction"
+import { fetchTransactionSummary } from "@/utils/fetchSummary";
 
 const symbol = "ETHUSDT";
 
