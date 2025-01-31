@@ -4,8 +4,11 @@ interface TransactionSummaryResponse {
 }
 
 export async function fetchTransactionSummary(): Promise<TransactionSummaryResponse> {
-  const response = await fetch("/transactions-summary", {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4242"}/api/transactions-summary`, {
     method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+    },
   });
 
   if (!response.ok) {
