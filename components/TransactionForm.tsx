@@ -23,6 +23,13 @@ export default function TransactionForm({ onSearch, isLoading }: TransactionForm
     // Convert end date to end of day timestamp
     const endTimestamp = endDate ? new Date(endDate).setHours(23, 59, 59, 999) / 1000 : Math.floor(Date.now() / 1000)
 
+    // Validate that the start timestamp is earlier than the end timestamp
+    if (startTimestamp > endTimestamp) {
+      // You can replace this with a toast notification or other error handling method
+      alert("Start date must be earlier than the end date")
+      return
+    }
+    
     onSearch(txHash, startTimestamp, endTimestamp)
   }
 
